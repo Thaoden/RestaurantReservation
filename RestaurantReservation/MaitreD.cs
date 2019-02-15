@@ -16,9 +16,9 @@ namespace Thaoden.RestaurantReservation
             TableAvailabilityChecker = tableAvailabilityChecker;
         }
 
-        public async Task<int?> TryAccept(Reservation reservation)
+        public async Task<int?> TryAccept(bool tableAvailable, Reservation reservation)
         {
-            if (await TableAvailabilityChecker.CheckTableAvailability(reservation))
+            if (tableAvailable)
             {
                 reservation.IsAccepted = true;
                 return await TableAvailabilityChecker.Create(reservation);
