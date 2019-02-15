@@ -6,20 +6,21 @@ namespace Thaoden.RestaurantReservation
 {
     public class ReservationsController : ControllerBase
     {
-        public ReservationsController(IMaitreD maitreD, ITableAvailabilityChecker tableAvailabilityChecker)
+        private readonly MaitreD _maitreD;
+
+        public ReservationsController(ITableAvailabilityChecker tableAvailabilityChecker)
         {
-            MaitreD = maitreD;
+            _maitreD = new MaitreD();
             TableAvailabilityChecker = tableAvailabilityChecker;
         }
 
-        public IMaitreD MaitreD { get; }
         public ITableAvailabilityChecker TableAvailabilityChecker { get; }
 
         public async Task<IActionResult> Post(Reservation reservation)
         {
             var tableAvailable = await TableAvailabilityChecker.CheckTableAvailability(reservation);
 
-            var reservationMaybe = MaitreD.TryAccept(tableAvailable, reservation);
+            var reservationMaybe = _maitreD.TryAccept(tableAvailable, reservation);
 
             return await reservationMaybe
                 .Select(async r => await TableAvailabilityChecker.Create(r))
