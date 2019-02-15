@@ -20,13 +20,11 @@ namespace Thaoden.RestaurantReservation
         {
             var tableAvailable = await TableAvailabilityChecker.CheckTableAvailability(reservation);
 
-            var reservationMaybe = _maitreD.TryAccept(tableAvailable, reservation);
-
-            return await reservationMaybe
+            return _maitreD.TryAccept(tableAvailable, reservation)
                 .Select(async r => await TableAvailabilityChecker.Create(r))
-                .Match<Task<ActionResult>>(
-                    none: Task.FromResult(new ContentResult { Content = "Table unavailable", StatusCode = StatusCodes.Status500InternalServerError } as ActionResult),
-                    some: async id => Ok(await id)
+                .Match(
+                    none: new ContentResult { Content = "Table unavailable", StatusCode = StatusCodes.Status500InternalServerError } as ActionResult,
+                    some: Ok
                 );
         }
     }
