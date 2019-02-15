@@ -19,7 +19,7 @@ namespace Thaoden.RestaurantReservation
             Telephone = telephone;
         }
 
-        public async Task<bool> CheckTableAvailability(Reservation reservation)
+        public async Task<Maybe<Reservation>> CheckTableAvailability(Reservation reservation)
         {
             var reservations = await Repository.ReadReservations(reservation.Date);
             int reservedSeats = reservations.Sum(r => r.Quantity);
@@ -31,18 +31,18 @@ namespace Thaoden.RestaurantReservation
                     if (!(await Telephone.AskConfirmation(r.Guest.PhoneNumber)))
                     {
                         //some guest cannot make it for his reservation
-                        return true;
+                        return new Maybe<Reservation>(reservation);
                     }
                 }
 
                 //all guests have confirmed their reservation - no table for us
-                return false;
+                return new Maybe<Reservation>();
             }
 
-            return true;
+            return new Maybe<Reservation>(reservation);
         }
 
-        public async Task<int?> Create(Reservation reservation)
+        public async Task<int> Create(Reservation reservation)
         {
             return await Repository.Create(reservation);
         }
