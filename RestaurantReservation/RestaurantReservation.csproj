@@ -4,6 +4,7 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     <RootNamespace>Thaoden.RestaurantReservation</RootNamespace>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

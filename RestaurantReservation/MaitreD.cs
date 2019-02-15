@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace Thaoden.RestaurantReservation
 {
@@ -16,17 +13,15 @@ namespace Thaoden.RestaurantReservation
             TableAvailabilityChecker = tableAvailabilityChecker;
         }
 
-        public async Task<int?> TryAccept(bool tableAvailable, Reservation reservation)
+        public Maybe<Reservation> TryAccept(bool tableAvailable, Reservation reservation)
         {
-            if (tableAvailable)
+            if (!tableAvailable)
             {
-                reservation.IsAccepted = true;
-                return await TableAvailabilityChecker.Create(reservation);
+                return new Maybe<Reservation>();
             }
-            else
-            {
-                return null;
-            }
+
+            reservation.IsAccepted = true;
+            return new Maybe<Reservation>(reservation);
         }
     }
 }

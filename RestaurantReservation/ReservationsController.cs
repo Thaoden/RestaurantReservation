@@ -18,15 +18,15 @@ namespace Thaoden.RestaurantReservation
         public async Task<IActionResult> Post(Reservation reservation)
         {
             var tableAvailable = await TableAvailabilityChecker.CheckTableAvailability(reservation);
-            int? id = await MaitreD.TryAccept(tableAvailable, reservation);
-            if (id == null)
-                return new ContentResult
-                {
-                    Content = "Table unavailable",
-                    StatusCode = StatusCodes.Status500InternalServerError
-                };
 
-            return Ok(id.Value);
+            var reservationMaybe = MaitreD.TryAccept(tableAvailable, reservation);
+
+            return await reservationMaybe
+                .Select(async r => await TableAvailabilityChecker.Create(r))
+                .Match<Task<ActionResult>>(
+                    none: Task.FromResult(new ContentResult { Content = "Table unavailable", StatusCode = StatusCodes.Status500InternalServerError } as ActionResult),
+                    some: async id => Ok(await id)
+                );
         }
     }
 }

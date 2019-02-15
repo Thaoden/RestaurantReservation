@@ -7,6 +7,6 @@ namespace Thaoden.RestaurantReservation
 {
     public interface IMaitreD
     {
-        Task<int?> TryAccept(bool tableAvailable, Reservation reservation);
+        Maybe<Reservation> TryAccept(bool tableAvailable, Reservation reservation);
     }
 }

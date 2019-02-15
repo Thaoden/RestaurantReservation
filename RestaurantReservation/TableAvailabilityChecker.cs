@@ -41,5 +41,10 @@ namespace Thaoden.RestaurantReservation
 
             return true;
         }
+
+        public async Task<int?> Create(Reservation reservation)
+        {
+            return await Repository.Create(reservation);
+        }
     }
 }
